@@ -1,0 +1,1144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quem É Mais Provável — DAA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  :root{
+    color-scheme: light dark;
+    --paper:#F3F5FA;
+    --paper-alt:#E6EAF6;
+    --paper-card:#FFFFFF;
+    --ink:#1B2340;
+    --ink-soft:#535C7E;
+    --line:#D3D9EA;
+    --accent:#D62839;
+    --accent-ink:#FFFFFF;
+    --gold:#B8790D;
+    --gold-bg:#FCE7BE;
+    --shadow:rgba(27,35,64,0.14);
+    --track:#E1E6F3;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#12162A;
+      --paper-alt:#191F3B;
+      --paper-card:#1E2544;
+      --ink:#EDEFF7;
+      --ink-soft:#A9B0CC;
+      --line:rgba(255,255,255,0.14);
+      --accent:#FF6B6B;
+      --accent-ink:#241014;
+      --gold:#FFC24B;
+      --gold-bg:#3A2E12;
+      --shadow:rgba(0,0,0,0.4);
+      --track:#262C4C;
+    }
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0; padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    display:flex;
+    min-height:100vh;
+  }
+  .app-shell{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    max-width:560px;
+    margin:0 auto;
+  }
+  h1,h2,h3{
+    font-family:'Fredoka','IBM Plex Sans',system-ui,sans-serif;
+    font-weight:700;
+    text-wrap:balance;
+    margin:0;
+  }
+  button{font-family:inherit;}
+  input{font-family:inherit;}
+  button:focus-visible, input:focus-visible, a:focus-visible{
+    outline:3px solid var(--accent);
+    outline-offset:2px;
+  }
+
+  /* Letterhead */
+  .letterhead{
+    padding:18px 20px 14px;
+    border-bottom:1px solid var(--line);
+    background:var(--paper-alt);
+  }
+  .letterhead-top{display:flex; align-items:center; gap:12px;}
+  .join-top{padding:2px 0 4px;}
+  .seal{
+    font-size:26px;
+    flex:0 0 auto;
+    filter:drop-shadow(0 1px 0 var(--shadow));
+  }
+  .org{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .doc-title{
+    font-family:'Fredoka','IBM Plex Sans',sans-serif;
+    font-weight:700;
+    font-size:17px;
+    line-height:1.15;
+  }
+  .you-chip{
+    margin-top:10px;
+    font-size:13px;
+    color:var(--ink-soft);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .you-chip strong{color:var(--ink);}
+  .link-btn{
+    background:none;
+    border:none;
+    color:var(--accent);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    padding:2px 4px;
+  }
+  .sync-dot{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-size:11px;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    color:var(--ink-soft);
+  }
+  .sync-dot::before{
+    content:"";
+    width:7px; height:7px; border-radius:50%;
+    background:#9AA3C2;
+    flex:0 0 auto;
+  }
+  .sync-dot.on::before{background:#2E9E6B;}
+  .sync-dot.off::before{background:#C98A12;}
+
+  .tab-content{
+    flex:1;
+    padding:20px 20px 28px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  /* Bottom nav */
+  .tabbar{
+    display:flex;
+    border-top:1px solid var(--line);
+    background:var(--paper-alt);
+    position:sticky;
+    bottom:0;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .tab-btn{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    padding:10px 4px 8px;
+    background:none;
+    border:none;
+    color:var(--ink-soft);
+    font-size:11px;
+    font-weight:600;
+    cursor:pointer;
+    border-top:2px solid transparent;
+  }
+  .tab-btn.active{color:var(--accent); border-top-color:var(--accent);}
+  .tab-icon{font-size:19px;}
+
+  /* Buttons */
+  .btn{
+    font-weight:600;
+    font-size:15px;
+    border-radius:10px;
+    padding:12px 18px;
+    border:1px solid var(--line);
+    background:var(--paper-card);
+    color:var(--ink);
+    cursor:pointer;
+    min-height:44px;
+  }
+  .btn-primary{
+    background:var(--accent);
+    color:var(--accent-ink);
+    border-color:var(--accent);
+  }
+  .btn-secondary{
+    background:var(--paper-card);
+    color:var(--ink);
+  }
+  .btn-lg{width:100%; font-size:16px; padding:14px 18px;}
+  .btn:disabled{opacity:.45; cursor:not-allowed;}
+
+  /* Empty states */
+  .empty-state{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:10px;
+    padding:32px 8px;
+  }
+  .empty-emoji{font-size:40px; margin:0 0 4px;}
+  .empty-state h2{font-size:19px;}
+  .empty-state p{color:var(--ink-soft); font-size:14px; max-width:320px; margin:0;}
+  .hint{color:var(--ink-soft); font-size:13px;}
+
+  /* Motion card (the "ballot") */
+  .motion-card{
+    border:2px dashed var(--line);
+    border-radius:16px;
+    padding:18px 18px 22px;
+    background:var(--paper-card);
+    position:relative;
+    box-shadow:0 2px 10px var(--shadow);
+  }
+  .motion-label{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .motion-text{
+    font-size:22px;
+    line-height:1.25;
+  }
+  .motion-card.revealed{padding-bottom:34px;}
+
+  .stamp{
+    position:absolute;
+    right:14px;
+    bottom:-14px;
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-weight:500;
+    font-size:15px;
+    letter-spacing:.1em;
+    color:var(--accent);
+    border:3px solid var(--accent);
+    border-radius:8px;
+    padding:4px 10px;
+    transform:rotate(-8deg) scale(1);
+    background:rgba(214,40,57,0.08);
+    animation:stampIn .35s ease-out;
+  }
+  @keyframes stampIn{
+    from{transform:rotate(-8deg) scale(0.3); opacity:0;}
+    to{transform:rotate(-8deg) scale(1); opacity:1;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .stamp{animation:none;}
+  }
+
+  /* Progress */
+  .progress-row{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .progress-track{
+    height:8px;
+    border-radius:6px;
+    background:var(--track);
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--accent);
+    border-radius:6px;
+    transition:width .3s ease;
+  }
+
+  /* Options grid */
+  .options-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(135px,1fr));
+    gap:10px;
+  }
+  .option{
+    border:1px solid var(--line);
+    background:var(--paper-card);
+    border-radius:12px;
+    padding:12px 10px;
+    min-height:52px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:6px;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    color:var(--ink);
+    text-align:left;
+  }
+  .option-name{overflow-wrap:anywhere;}
+  .option.selected{
+    border-color:var(--accent);
+    background:rgba(214,40,57,0.10);
+  }
+  .option-check{color:var(--accent); font-weight:700; flex:0 0 auto;}
+
+  .reveal-btn{margin-top:4px;}
+
+  /* Results */
+  .results-list{display:flex; flex-direction:column; gap:8px;}
+  .result-row{
+    display:grid;
+    grid-template-columns:1fr 2fr auto;
+    align-items:center;
+    gap:10px;
+    font-size:14px;
+  }
+  .result-name{font-weight:600; overflow-wrap:anywhere;}
+  .result-row.winner .result-name{color:var(--gold);}
+  .result-bar-track{height:10px; border-radius:6px; background:var(--track); overflow:hidden;}
+  .result-bar-fill{height:100%; border-radius:6px; background:var(--accent);}
+  .result-row.winner .result-bar-fill{background:var(--gold);}
+  .result-count{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-variant-numeric:tabular-nums;
+    color:var(--ink-soft);
+    text-align:right;
+    min-width:18px;
+  }
+  .my-vote{font-size:13px; color:var(--ink-soft); margin:0;}
+
+  /* Scoreboard */
+  .score-header{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-size:12px;
+    letter-spacing:.05em;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+  }
+  .score-list{display:flex; flex-direction:column; gap:8px;}
+  .score-row{
+    display:grid;
+    grid-template-columns:32px 1fr auto;
+    align-items:center;
+    gap:12px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:var(--paper-card);
+  }
+  .score-row.podium{background:var(--gold-bg); border-color:var(--gold);}
+  .score-rank{font-size:16px; font-weight:700; text-align:center; font-family:'IBM Plex Mono',monospace;}
+  .score-name{font-weight:600; overflow-wrap:anywhere;}
+  .score-stats{display:flex; flex-direction:column; align-items:flex-end; font-size:12px; color:var(--ink-soft); font-variant-numeric:tabular-nums;}
+  .score-stats span:first-child{font-weight:700; color:var(--ink); font-size:13px;}
+  .score-row.podium .score-stats span:first-child{color:var(--gold);}
+
+  /* Registro */
+  .registro-section{display:flex; flex-direction:column; gap:10px;}
+  .section-title{font-size:17px;}
+  .section-hint{margin:0; font-size:13px; color:var(--ink-soft);}
+  .add-row{display:flex; gap:8px;}
+  .add-row input{
+    flex:1;
+    min-width:0;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:11px 12px;
+    font-size:14px;
+    background:var(--paper-card);
+    color:var(--ink);
+  }
+  .chip-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px;}
+  .chip-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:9px 12px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:var(--paper-card);
+    font-size:14px;
+  }
+  .question-row .question-text{display:flex; align-items:center; gap:7px; overflow-wrap:anywhere;}
+  .question-actions{display:flex; align-items:center; gap:6px; flex:0 0 auto;}
+  .used-dot{width:6px; height:6px; border-radius:50%; background:var(--ink-soft); flex:0 0 auto; display:inline-block;}
+  .chip-remove{
+    background:none;
+    border:none;
+    color:var(--ink-soft);
+    font-size:18px;
+    line-height:1;
+    cursor:pointer;
+    padding:2px 4px;
+    flex:0 0 auto;
+  }
+  .chip-remove:hover{color:var(--accent);}
+
+  /* Join screen */
+  .join-screen{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    padding:20px;
+  }
+  .join-instructions{margin:0; font-size:14px; color:var(--ink-soft);}
+  .member-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(130px,1fr));
+    gap:8px;
+  }
+  .member-pick{
+    border:1px solid var(--line);
+    background:var(--paper-card);
+    border-radius:10px;
+    padding:11px 10px;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    color:var(--ink);
+    min-height:44px;
+  }
+  .member-pick:hover{border-color:var(--accent);}
+  .join-add-row{margin-top:auto;}
+
+  .setup-banner{
+    margin:14px 20px 0;
+    padding:12px 14px;
+    border:1px dashed var(--gold);
+    background:var(--gold-bg);
+    border-radius:10px;
+    font-size:12.5px;
+    color:var(--ink);
+    line-height:1.45;
+  }
+  .setup-banner code{
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    font-size:11px;
+    background:rgba(0,0,0,0.08);
+    padding:1px 5px;
+    border-radius:4px;
+  }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<!-- Firebase (compat build) — only the two pieces this game needs -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =====================================================================
+     CONFIGURAÇÃO DO FIREBASE
+     Troque os valores abaixo pelos do SEU projeto Firebase (Configurações
+     do projeto → seus apps → app da Web → firebaseConfig). Esses valores
+     não são segredo, podem ficar visíveis no código do site.
+     ===================================================================== */
+  var firebaseConfig = {
+    apiKey: "AIzaSyDXOc2Q2avfNj4XwxgAQVmT-zUVxP7Yjbs",
+    authDomain: "quem-mais-provavel-daa.firebaseapp.com",
+    projectId: "quem-mais-provavel-daa",
+    storageBucket: "quem-mais-provavel-daa.firebasestorage.app",
+    messagingSenderId: "373986645846",
+    appId: "1:373986645846:web:3b82ebbb9d86a8f7baa8f7"
+  };
+  var FIREBASE_CONFIGURED = firebaseConfig.apiKey !== "REPLACE_ME";
+  /* ===================================================================== */
+
+  var DEFAULT_QUESTIONS = [
+    "chegar atrasado(a) até no próprio aniversário",
+    "sobreviver a um apocalipse",
+    "ser preso(a)",
+    "ter um perfil fake",
+    "contar um segredo sem querer",
+    "perdoar uma traição",
+    "fazer uma loucura depois de beber",
+    "ficar famoso(a)",
+    "ficar milionário(a)",
+    "participar de um reality show",
+    "virar influencer",
+    "ser cancelado(a)",
+    "casar em Las Vegas depois de uma noite",
+    "chorar assistindo comercial de banco",
+    "virar meme da faculdade",
+    "ligar pro ex às 3 da manhã",
+    "dormir em qualquer lugar, a qualquer hora",
+    "ganhar na loteria e sumir do mapa",
+    "virar vegano(a) do nada",
+    "ter um pet exótico",
+    "se perder numa cidade que nunca visitou",
+    "entrar numa pegadinha de programa de TV",
+    "inventar a desculpa mais mirabolante pra faltar",
+    "se apaixonar por um golpista sem perceber",
+    "treinar na academia por uma semana e desistir pra sempre",
+    "virar \"stalker\" de rede social",
+    "dançar em cima da mesa numa festa",
+    "sumir do grupo do WhatsApp sem avisar ninguém",
+    "comprar algo completamente inútil por impulso",
+    "contar uma mentira que ninguém acredita",
+    "se machucar sozinho(a) do nada",
+    "largar tudo pra virar artista",
+    "esquecer o próprio aniversário",
+    "brigar com um estranho na rua por besteira",
+    "virar \"coach\" ou vidente da vida dos outros",
+    "maratonar uma série a noite toda e faltar aula no outro dia",
+    "ter uma crise existencial no meio de uma festa",
+    "comprar ingresso de show e não ir",
+    "ser reconhecido(a) na rua por algo vergonhoso",
+    "topar qualquer aposta, por mais absurda que seja"
+  ];
+
+  var identity = null;
+  var mode = "local";
+  var dbApi = null;
+  var tab = "play";
+  var screen = "join";
+  var cache = { members: [], questions: [], rounds: [], state: { currentRoundId: null } };
+  var seedAttempted = false;
+
+  var LOCAL_KEYS = {
+    members: "qmp_local_members_v1",
+    questions: "qmp_local_questions_v1",
+    rounds: "qmp_local_rounds_v1",
+    state: "qmp_local_state_v1"
+  };
+
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function nowIso(){ return new Date().toISOString(); }
+  function uuid(){
+    if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
+    return "id-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+  }
+  function byName(a, b){ return a.name.localeCompare(b.name, "pt-BR"); }
+
+  function localGet(key, fallback){
+    try {
+      var raw = localStorage.getItem(key);
+      if (raw == null) return fallback;
+      var parsed = JSON.parse(raw);
+      return parsed == null ? fallback : parsed;
+    } catch (e) { return fallback; }
+  }
+  function localSet(key, val){
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+  }
+  function safeParseIdentity(){
+    try {
+      var raw = localStorage.getItem("qmp_identity_v1");
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      if (parsed && parsed.id && parsed.name) return parsed;
+      return null;
+    } catch (e) { return null; }
+  }
+
+  /* ---------- data layer ---------- */
+
+  function loadLocalAll(){
+    cache.members = localGet(LOCAL_KEYS.members, []).slice().sort(byName);
+    var qs = localGet(LOCAL_KEYS.questions, []);
+    if (qs.length === 0) {
+      qs = DEFAULT_QUESTIONS.map(function(text){
+        return { id: uuid(), text: text, custom: false, used: false, createdAt: nowIso() };
+      });
+      localSet(LOCAL_KEYS.questions, qs);
+    }
+    cache.questions = qs;
+    cache.rounds = localGet(LOCAL_KEYS.rounds, []);
+    cache.state = localGet(LOCAL_KEYS.state, { currentRoundId: null });
+  }
+
+  function fallbackToLocal(){
+    if (mode === "local") return;
+    mode = "local";
+    dbApi = null;
+    loadLocalAll();
+    render();
+  }
+
+  function subscribeDb(){
+    dbApi.collection("members").onSnapshot(function(snap){
+      cache.members = snap.docs.map(function(d){ return Object.assign({ id: d.id }, d.data()); }).sort(byName);
+      render();
+    }, function(){ fallbackToLocal(); });
+
+    dbApi.collection("questions").onSnapshot(function(snap){
+      cache.questions = snap.docs.map(function(d){ return Object.assign({ id: d.id }, d.data()); });
+      render();
+    }, function(){ fallbackToLocal(); });
+
+    dbApi.collection("rounds").orderBy("createdAt", "desc").limit(300).onSnapshot(function(snap){
+      cache.rounds = snap.docs.map(function(d){ return Object.assign({ id: d.id }, d.data()); });
+      render();
+    }, function(){ fallbackToLocal(); });
+
+    dbApi.doc("game/state").onSnapshot(function(snap){
+      cache.state = snap.exists ? snap.data() : { currentRoundId: null };
+      render();
+    }, function(){ fallbackToLocal(); });
+  }
+
+  function seedQuestionsIfNeeded(){
+    if (seedAttempted) return;
+    seedAttempted = true;
+    dbApi.collection("questions").get().then(function(snap){
+      if (!snap.empty) return;
+      var chain = Promise.resolve();
+      DEFAULT_QUESTIONS.forEach(function(text){
+        chain = chain.then(function(){
+          return dbApi.collection("questions").add({ text: text, custom: false, used: false, createdAt: nowIso() });
+        });
+      });
+      return chain;
+    }).catch(function(){});
+  }
+
+  function addMember(name){
+    name = (name || "").trim();
+    if (!name) return Promise.resolve(null);
+    if (mode === "db") {
+      return dbApi.collection("members").add({ name: name, createdAt: nowIso() })
+        .then(function(ref){ return { id: ref.id, name: name }; })
+        .catch(function(){ fallbackToLocal(); return addMember(name); });
+    }
+    var id = uuid();
+    var list = localGet(LOCAL_KEYS.members, []);
+    list.push({ id: id, name: name, createdAt: nowIso() });
+    localSet(LOCAL_KEYS.members, list);
+    cache.members = list.slice().sort(byName);
+    render();
+    return Promise.resolve({ id: id, name: name });
+  }
+
+  function removeMember(id){
+    if (mode === "db") {
+      return dbApi.doc("members/" + id).delete().catch(function(){});
+    }
+    var list = localGet(LOCAL_KEYS.members, []).filter(function(m){ return m.id !== id; });
+    localSet(LOCAL_KEYS.members, list);
+    cache.members = list;
+    render();
+    return Promise.resolve();
+  }
+
+  function addQuestion(text){
+    text = (text || "").trim();
+    if (!text) return Promise.resolve();
+    var body = { text: text, custom: true, used: false, createdAt: nowIso() };
+    if (mode === "db") {
+      return dbApi.collection("questions").add(body).catch(function(){});
+    }
+    var list = localGet(LOCAL_KEYS.questions, []);
+    list.push(Object.assign({ id: uuid() }, body));
+    localSet(LOCAL_KEYS.questions, list);
+    cache.questions = list;
+    render();
+    return Promise.resolve();
+  }
+
+  function removeQuestion(id){
+    if (mode === "db") {
+      return dbApi.doc("questions/" + id).delete().catch(function(){});
+    }
+    var list = localGet(LOCAL_KEYS.questions, []).filter(function(q){ return q.id !== id; });
+    localSet(LOCAL_KEYS.questions, list);
+    cache.questions = list;
+    render();
+    return Promise.resolve();
+  }
+
+  function markQuestionUsed(id, used){
+    if (mode === "db") {
+      return dbApi.doc("questions/" + id).update({ used: used }).catch(function(){});
+    }
+    var list = localGet(LOCAL_KEYS.questions, []);
+    var idx = list.findIndex(function(q){ return q.id === id; });
+    if (idx >= 0) {
+      list[idx] = Object.assign({}, list[idx], { used: used });
+      localSet(LOCAL_KEYS.questions, list);
+      cache.questions = list;
+    }
+    return Promise.resolve();
+  }
+
+  function drawQuestion(forceId){
+    var q = null;
+    if (forceId) q = cache.questions.find(function(x){ return x.id === forceId; });
+    var afterPick = Promise.resolve();
+    if (!q) {
+      var pool = cache.questions.filter(function(x){ return !x.used; });
+      if (pool.length === 0 && cache.questions.length > 0) {
+        var resetChain = Promise.resolve();
+        cache.questions.forEach(function(item){
+          resetChain = resetChain.then(function(){ return markQuestionUsed(item.id, false); });
+        });
+        afterPick = resetChain.then(function(){
+          pool = cache.questions.slice();
+        });
+      } else {
+        afterPick = Promise.resolve();
+      }
+    }
+    return afterPick.then(function(){
+      if (!q) {
+        var choices = cache.questions.filter(function(x){ return !x.used; });
+        if (choices.length === 0) choices = cache.questions.slice();
+        if (choices.length === 0) return;
+        q = choices[Math.floor(Math.random() * choices.length)];
+      }
+      var roundBody = { questionId: q.id, questionText: q.text, status: "voting", votes: {}, createdAt: nowIso() };
+      if (mode === "db") {
+        return dbApi.collection("rounds").add(roundBody).then(function(ref){
+          return markQuestionUsed(q.id, true).then(function(){
+            return dbApi.doc("game/state").set({ currentRoundId: ref.id });
+          });
+        });
+      }
+      var roundId = uuid();
+      var list = localGet(LOCAL_KEYS.rounds, []);
+      list.push(Object.assign({ id: roundId }, roundBody));
+      localSet(LOCAL_KEYS.rounds, list);
+      cache.rounds = list;
+      return markQuestionUsed(q.id, true).then(function(){
+        cache.state = { currentRoundId: roundId };
+        localSet(LOCAL_KEYS.state, cache.state);
+        render();
+      });
+    });
+  }
+
+  function vote(roundId, memberId){
+    if (!identity || !roundId) return Promise.resolve();
+    if (mode === "db") {
+      var patch = { votes: {} };
+      patch.votes[identity.id] = memberId;
+      return dbApi.doc("rounds/" + roundId).update(patch).catch(function(){});
+    }
+    var list = localGet(LOCAL_KEYS.rounds, []);
+    var idx = list.findIndex(function(r){ return r.id === roundId; });
+    if (idx >= 0) {
+      var votes = Object.assign({}, list[idx].votes || {});
+      votes[identity.id] = memberId;
+      list[idx] = Object.assign({}, list[idx], { votes: votes });
+      localSet(LOCAL_KEYS.rounds, list);
+      cache.rounds = list;
+      render();
+    }
+    return Promise.resolve();
+  }
+
+  function revealRound(roundId){
+    var round = cache.rounds.find(function(r){ return r.id === roundId; });
+    if (!round) return Promise.resolve();
+    var tally = {};
+    Object.keys(round.votes || {}).forEach(function(pid){
+      var mid = round.votes[pid];
+      tally[mid] = (tally[mid] || 0) + 1;
+    });
+    var max = 0;
+    Object.keys(tally).forEach(function(mid){ if (tally[mid] > max) max = tally[mid]; });
+    var winnerIds = max > 0 ? Object.keys(tally).filter(function(mid){ return tally[mid] === max; }) : [];
+    var patch = { status: "revealed", winnerIds: winnerIds, revealedAt: nowIso() };
+    if (mode === "db") {
+      return dbApi.doc("rounds/" + roundId).update(patch).catch(function(){});
+    }
+    var list = localGet(LOCAL_KEYS.rounds, []);
+    var idx = list.findIndex(function(r){ return r.id === roundId; });
+    if (idx >= 0) {
+      list[idx] = Object.assign({}, list[idx], patch);
+      localSet(LOCAL_KEYS.rounds, list);
+      cache.rounds = list;
+      render();
+    }
+    return Promise.resolve();
+  }
+
+  /* ---------- identity ---------- */
+
+  function setIdentity(id, name){
+    identity = { id: id, name: name };
+    localSet("qmp_identity_v1", identity);
+    screen = "app";
+    render();
+  }
+  function clearIdentity(){
+    identity = null;
+    try { localStorage.removeItem("qmp_identity_v1"); } catch (e) {}
+    screen = "join";
+    render();
+  }
+  function handleAddSelf(name){
+    name = (name || "").trim();
+    if (!name) return;
+    var existing = cache.members.find(function(m){ return m.name.toLowerCase() === name.toLowerCase(); });
+    if (existing) { setIdentity(existing.id, existing.name); return; }
+    addMember(name).then(function(created){
+      if (created) setIdentity(created.id, created.name);
+    });
+  }
+
+  /* ---------- render ---------- */
+
+  function currentRound(){
+    var id = cache.state.currentRoundId;
+    if (!id) return null;
+    return cache.rounds.find(function(r){ return r.id === id; }) || null;
+  }
+
+  function syncBadge(){
+    if (mode === "db") return '<span class="sync-dot on">sincronizado</span>';
+    return '<span class="sync-dot off">neste aparelho</span>';
+  }
+
+  function render(){
+    var root = document.getElementById("app");
+    if (!root) return;
+    var banner = (!FIREBASE_CONFIGURED)
+      ? '<div class="setup-banner">⚠️ O jogo ainda não está ligado ao Firebase — troque o <code>firebaseConfig</code> no arquivo pelos dados do seu projeto para ativar a sincronização entre celulares. Por enquanto está rodando só neste aparelho.</div>'
+      : "";
+    if (screen === "join" || !identity) {
+      root.innerHTML = banner + renderJoin();
+      return;
+    }
+    root.innerHTML = banner + renderShell();
+  }
+
+  function renderShell(){
+    var body = tab === "play" ? renderPlay() : (tab === "score" ? renderScore() : renderRegistro());
+    return (
+      '<div class="app-shell">' +
+        '<div class="letterhead">' +
+          '<div class="letterhead-top">' +
+            '<span class="seal">⚖️</span>' +
+            '<div class="letterhead-text">' +
+              '<div class="org">DAA &mdash; Diretório Acadêmico de Administração</div>' +
+              '<div class="doc-title">Assembleia de &ldquo;Quem é Mais Provável?&rdquo;</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="you-chip">Você é <strong>' + esc(identity.name) + '</strong>' +
+            '<button type="button" class="link-btn" data-action="change-identity">trocar</button>' +
+            syncBadge() +
+          '</div>' +
+        '</div>' +
+        '<main class="tab-content">' + body + '</main>' +
+        '<nav class="tabbar">' +
+          '<button type="button" class="tab-btn ' + (tab === "play" ? "active" : "") + '" data-action="switch-tab" data-tab="play"><span class="tab-icon">🗳️</span>Votar</button>' +
+          '<button type="button" class="tab-btn ' + (tab === "score" ? "active" : "") + '" data-action="switch-tab" data-tab="score"><span class="tab-icon">🏆</span>Placar</button>' +
+          '<button type="button" class="tab-btn ' + (tab === "registro" ? "active" : "") + '" data-action="switch-tab" data-tab="registro"><span class="tab-icon">📋</span>Registro</button>' +
+        '</nav>' +
+      '</div>'
+    );
+  }
+
+  function renderPlay(){
+    if (cache.members.length < 2) {
+      return (
+        '<div class="empty-state">' +
+          '<p class="empty-emoji">📋</p>' +
+          '<h2>Falta gente no registro</h2>' +
+          '<p>Adicione pelo menos 2 nomes na aba <strong>Registro</strong> antes de abrir a sessão.</p>' +
+          '<button type="button" class="btn btn-primary" data-action="switch-tab" data-tab="registro">Ir para o Registro</button>' +
+        '</div>'
+      );
+    }
+    var round = currentRound();
+    if (!cache.state.currentRoundId || !round) {
+      var disabled = cache.questions.length === 0;
+      return (
+        '<div class="empty-state">' +
+          '<p class="empty-emoji">🔔</p>' +
+          '<h2>Nenhuma moção em votação</h2>' +
+          '<p>Sorteie a próxima pergunta da ata para abrir a votação.</p>' +
+          '<button type="button" class="btn btn-primary btn-lg" data-action="draw-question"' + (disabled ? " disabled" : "") + '>🎲 Sortear pergunta</button>' +
+          (disabled ? '<p class="hint">Cadastre perguntas no Registro primeiro.</p>' : "") +
+        '</div>'
+      );
+    }
+    return round.status === "voting" ? renderVoting(round) : renderReveal(round);
+  }
+
+  function renderVoting(round){
+    var votes = round.votes || {};
+    var votedCount = Object.keys(votes).length;
+    var total = cache.members.length;
+    var myVote = votes[identity.id];
+    var pct = total ? Math.min(100, (votedCount / total) * 100) : 0;
+    var optionsHtml = cache.members.map(function(m){
+      var selected = myVote === m.id;
+      return (
+        '<button type="button" class="option ' + (selected ? "selected" : "") + '" data-action="vote" data-member-id="' + esc(m.id) + '">' +
+          '<span class="option-name">' + esc(m.name) + '</span>' +
+          (selected ? '<span class="option-check">✓</span>' : "") +
+        '</button>'
+      );
+    }).join("");
+    return (
+      '<div class="motion-card">' +
+        '<div class="motion-label">Moção em votação</div>' +
+        '<h2 class="motion-text">Quem é mais provável de ' + esc(round.questionText) + '</h2>' +
+      '</div>' +
+      '<div class="progress-row">' +
+        '<span>' + votedCount + ' de ' + total + ' votaram</span>' +
+        '<div class="progress-track"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
+      '</div>' +
+      '<div class="options-grid">' + optionsHtml + '</div>' +
+      '<button type="button" class="btn btn-secondary btn-lg reveal-btn" data-action="reveal"' + (votedCount === 0 ? " disabled" : "") + '>👁️ Revelar resultado</button>'
+    );
+  }
+
+  function renderReveal(round){
+    var votes = round.votes || {};
+    var tally = {};
+    Object.keys(votes).forEach(function(pid){
+      var mid = votes[pid];
+      tally[mid] = (tally[mid] || 0) + 1;
+    });
+    var ranked = cache.members
+      .map(function(m){ return Object.assign({}, m, { count: tally[m.id] || 0 }); })
+      .filter(function(m){ return m.count > 0; })
+      .sort(function(a, b){ return b.count - a.count; });
+    var winnerIds = round.winnerIds || [];
+    var maxCount = ranked.length ? ranked[0].count : 0;
+    var rowsHtml = ranked.length ? ranked.map(function(m){
+      var isWinner = winnerIds.indexOf(m.id) !== -1;
+      var pct = maxCount ? (m.count / maxCount * 100) : 0;
+      return (
+        '<div class="result-row ' + (isWinner ? "winner" : "") + '">' +
+          '<div class="result-name">' + (isWinner ? "🏆 " : "") + esc(m.name) + '</div>' +
+          '<div class="result-bar-track"><div class="result-bar-fill" style="width:' + pct + '%"></div></div>' +
+          '<div class="result-count">' + m.count + '</div>' +
+        '</div>'
+      );
+    }).join("") : '<p class="hint">Ninguém votou nessa moção.</p>';
+    var myVoteId = votes[identity.id];
+    var myVoteMember = myVoteId ? cache.members.find(function(m){ return m.id === myVoteId; }) : null;
+    return (
+      '<div class="motion-card revealed">' +
+        '<div class="motion-label">Resultado apurado</div>' +
+        '<h2 class="motion-text">Quem é mais provável de ' + esc(round.questionText) + '</h2>' +
+        (winnerIds.length ? '<div class="stamp">APROVADO</div>' : "") +
+      '</div>' +
+      '<div class="results-list">' + rowsHtml + '</div>' +
+      (myVoteMember ? '<p class="my-vote">Você votou em <strong>' + esc(myVoteMember.name) + '</strong></p>' : "") +
+      '<button type="button" class="btn btn-primary btn-lg" data-action="next-question">➡️ Próxima moção</button>'
+    );
+  }
+
+  function renderScore(){
+    var revealed = cache.rounds.filter(function(r){ return r.status === "revealed"; });
+    if (revealed.length === 0) {
+      return (
+        '<div class="empty-state">' +
+          '<p class="empty-emoji">🏆</p>' +
+          '<h2>Ainda sem placar</h2>' +
+          '<p>O placar aparece depois da primeira moção revelada.</p>' +
+        '</div>'
+      );
+    }
+    var wins = {}, votesTotal = {};
+    revealed.forEach(function(r){
+      var tally = {};
+      Object.keys(r.votes || {}).forEach(function(pid){
+        var mid = r.votes[pid];
+        tally[mid] = (tally[mid] || 0) + 1;
+        votesTotal[mid] = (votesTotal[mid] || 0) + 1;
+      });
+      (r.winnerIds || []).forEach(function(mid){ wins[mid] = (wins[mid] || 0) + 1; });
+    });
+    var ranked = cache.members.map(function(m){
+      return Object.assign({}, m, { wins: wins[m.id] || 0, votes: votesTotal[m.id] || 0 });
+    }).sort(function(a, b){
+      return (b.wins - a.wins) || (b.votes - a.votes) || a.name.localeCompare(b.name, "pt-BR");
+    });
+    var medals = ["🥇", "🥈", "🥉"];
+    var rows = ranked.map(function(m, i){
+      return (
+        '<div class="score-row ' + (i < 3 ? "podium" : "") + '">' +
+          '<div class="score-rank">' + (medals[i] || ("#" + (i + 1))) + '</div>' +
+          '<div class="score-name">' + esc(m.name) + '</div>' +
+          '<div class="score-stats"><span>' + m.wins + " vitória" + (m.wins === 1 ? "" : "s") + '</span><span class="score-sub">' + m.votes + " voto" + (m.votes === 1 ? "" : "s") + " no total</span></div>" +
+        '</div>'
+      );
+    }).join("");
+    var motionWord = revealed.length === 1 ? "moção" : "moções";
+    return (
+      '<div class="score-header">Ata apurada em ' + revealed.length + " " + motionWord + '</div>' +
+      '<div class="score-list">' + rows + '</div>'
+    );
+  }
+
+  function renderRegistro(){
+    var membersHtml = cache.members.map(function(m){
+      return (
+        '<li class="chip-row"><span>' + esc(m.name) + '</span>' +
+          '<button type="button" class="chip-remove" data-action="remove-member" data-id="' + esc(m.id) + '" aria-label="Remover ' + esc(m.name) + '">×</button>' +
+        '</li>'
+      );
+    }).join("") || '<li class="hint">Nenhum membro cadastrado ainda.</li>';
+
+    var sortedQuestions = cache.questions.slice().sort(function(a, b){ return a.text.localeCompare(b.text, "pt-BR"); });
+    var questionsHtml = sortedQuestions.map(function(q){
+      var usedDot = q.used ? '<span class="used-dot" title="já sorteada"></span>' : "";
+      return (
+        '<li class="chip-row question-row">' +
+          '<span class="question-text">' + usedDot + esc(q.text) + '</span>' +
+          '<span class="question-actions">' +
+            '<button type="button" class="link-btn" data-action="use-question-now" data-id="' + esc(q.id) + '">usar agora</button>' +
+            '<button type="button" class="chip-remove" data-action="remove-question" data-id="' + esc(q.id) + '" aria-label="Remover pergunta">×</button>' +
+          '</span>' +
+        '</li>'
+      );
+    }).join("") || '<li class="hint">Nenhuma pergunta cadastrada.</li>';
+
+    return (
+      '<section class="registro-section">' +
+        '<h2 class="section-title">Membros (' + cache.members.length + ')</h2>' +
+        '<p class="section-hint">Qualquer nome cadastrado aqui vira opção de voto.</p>' +
+        '<form data-form="add-member" class="add-row">' +
+          '<input type="text" id="add-member-input" placeholder="Nome do membro" autocomplete="off" required />' +
+          '<button type="submit" class="btn btn-primary">Adicionar</button>' +
+        '</form>' +
+        '<ul class="chip-list">' + membersHtml + '</ul>' +
+      '</section>' +
+      '<section class="registro-section">' +
+        '<h2 class="section-title">Perguntas (' + cache.questions.length + ')</h2>' +
+        '<p class="section-hint">&ldquo;Quem é mais provável de…&rdquo;</p>' +
+        '<form data-form="add-question" class="add-row">' +
+          '<input type="text" id="add-question-input" placeholder="ex: virar meme da faculdade" autocomplete="off" required />' +
+          '<button type="submit" class="btn btn-primary">Adicionar</button>' +
+        '</form>' +
+        '<ul class="chip-list questions">' + questionsHtml + '</ul>' +
+      '</section>'
+    );
+  }
+
+  function renderJoin(){
+    var memberButtons = cache.members.map(function(m){
+      return '<button type="button" class="member-pick" data-action="pick-identity" data-id="' + esc(m.id) + '" data-name="' + esc(m.name) + '">' + esc(m.name) + '</button>';
+    }).join("");
+    return (
+      '<div class="app-shell">' +
+        '<div class="join-screen">' +
+          '<div class="letterhead-top join-top">' +
+            '<span class="seal">⚖️</span>' +
+            '<div class="letterhead-text">' +
+              '<div class="org">DAA &mdash; Diretório Acadêmico de Administração</div>' +
+              '<div class="doc-title">Assembleia de &ldquo;Quem é Mais Provável?&rdquo;</div>' +
+            '</div>' +
+          '</div>' +
+          '<p class="join-instructions">Antes de votar, registre sua presença na ata. ' + syncBadge() + '</p>' +
+          (cache.members.length
+            ? '<div class="member-grid">' + memberButtons + '</div>'
+            : '<p class="hint">Ainda ninguém foi cadastrado — seja o(a) primeiro(a).</p>') +
+          '<form data-form="join-add-self" class="add-row join-add-row">' +
+            '<input type="text" id="join-name-input" placeholder="Não está na lista? Seu nome" autocomplete="off" required />' +
+            '<button type="submit" class="btn btn-primary">Entrar</button>' +
+          '</form>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  /* ---------- events ---------- */
+
+  function onAppClick(e){
+    var t = e.target.closest("[data-action]");
+    if (!t) return;
+    var action = t.dataset.action;
+    if (action === "pick-identity") setIdentity(t.dataset.id, t.dataset.name);
+    else if (action === "switch-tab") { tab = t.dataset.tab; render(); }
+    else if (action === "change-identity") clearIdentity();
+    else if (action === "draw-question") drawQuestion();
+    else if (action === "vote") vote(cache.state.currentRoundId, t.dataset.memberId);
+    else if (action === "reveal") revealRound(cache.state.currentRoundId);
+    else if (action === "next-question") drawQuestion();
+    else if (action === "remove-member") removeMember(t.dataset.id);
+    else if (action === "remove-question") removeQuestion(t.dataset.id);
+    else if (action === "use-question-now") drawQuestion(t.dataset.id);
+  }
+
+  function onAppSubmit(e){
+    var form = e.target.closest("form[data-form]");
+    if (!form) return;
+    e.preventDefault();
+    var kind = form.dataset.form;
+    var input = form.querySelector("input");
+    var val = input ? input.value : "";
+    if (kind === "add-member") { addMember(val); if (input) input.value = ""; }
+    else if (kind === "add-question") { addQuestion(val); if (input) input.value = ""; }
+    else if (kind === "join-add-self") { handleAddSelf(val); if (input) input.value = ""; }
+  }
+
+  /* ---------- boot ---------- */
+
+  function tryInitFirebase(){
+    try {
+      if (!FIREBASE_CONFIGURED) return null;
+      if (typeof firebase === "undefined" || !firebase.initializeApp) return null;
+      firebase.initializeApp(firebaseConfig);
+      return firebase.firestore();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function start(){
+    identity = safeParseIdentity();
+    screen = identity ? "app" : "join";
+
+    document.addEventListener("click", onAppClick);
+    document.addEventListener("submit", onAppSubmit);
+
+    var fsDb = tryInitFirebase();
+    if (fsDb) {
+      dbApi = fsDb;
+      mode = "db";
+      subscribeDb();
+      seedQuestionsIfNeeded();
+    } else {
+      mode = "local";
+      loadLocalAll();
+    }
+    render();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+</script>
+</body>
+</html>
